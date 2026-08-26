@@ -1,0 +1,11 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.cachebro/
+.atl/
+.DS_Store
+output.md
+traces/*
+!traces/.gitkeep
