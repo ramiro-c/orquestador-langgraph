@@ -91,7 +91,7 @@ def _imprimir_resultado(hops: list[str], result: dict) -> None:
     if result.get("last_agent") == "writer":
         from agents.writer import OUTPUT_PATH
 
-        print(f"\nBrief escrito en {OUTPUT_PATH}")
+        print(f"\nResearch escrito en {OUTPUT_PATH}")
 
 
 def _guardar_trazas(query: str, hops: list[str], result: dict) -> None:

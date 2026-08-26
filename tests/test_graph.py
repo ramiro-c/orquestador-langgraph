@@ -103,7 +103,7 @@ def test_writer_pisa_output_md(tmp_path):
     )
     run_query(graph, "¿Qué se dice de LangGraph esta semana?")
     text = dest.read_text(encoding="utf-8")
-    assert "# Brief de mercado" in text
+    assert "# Research" in text
     assert "LangGraph" in text
     assert "hallazgos" in text
     assert "positivo 0.2" in text

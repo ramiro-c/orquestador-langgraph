@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 from agents.context import user_query
 from state import MAX_STEPS, NextAgent, OrchestratorState
 
-SUPERVISOR_PROMPT = """Sos el supervisor de un orquestador de brief de mercado.
+SUPERVISOR_PROMPT = """Sos el supervisor de un orquestador de research.
 No busques en la web ni puntúes sentimiento. Elegí el próximo agente.
 
 Rúbrica (en orden, la primera que aplique gana):

@@ -1,4 +1,4 @@
-"""Nodo sink: pisa ``output.md`` con el brief (notes + analysis)."""
+"""Nodo sink: pisa ``output.md`` con el research (notes + analysis)."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ def render_brief(state: OrchestratorState) -> str:
     analysis = (state.get("analysis") or "").strip() or "(vacío)"
     last_error = (state.get("last_error") or "").strip()
     parts = [
-        "# Brief de mercado",
+        "# Research",
         "",
         "## Consulta",
         "",
@@ -42,7 +42,7 @@ def render_brief(state: OrchestratorState) -> str:
 def writer_turn(state: OrchestratorState, path: Path) -> dict:
     path.write_text(render_brief(state), encoding="utf-8")
     return {
-        "messages": [AIMessage(content=f"Brief escrito en {path.name}", name="writer")],
+        "messages": [AIMessage(content=f"Research escrito en {path.name}", name="writer")],
         "last_agent": "writer",
     }
 

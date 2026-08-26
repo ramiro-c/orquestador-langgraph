@@ -1,6 +1,6 @@
 # Orquestador multi-agente (LangGraph)
 
-Supervisor jerárquico para briefs de mercado: el **researcher** busca fuentes
+Supervisor jerárquico para research: el **researcher** busca fuentes
 con **Tavily**, el **analyst** puntúa sentimiento, el supervisor decide si
 falta alguien, y el **writer** pisa `output.md` al cerrar. Pre-entrega 6 del
 [curso de AI Engineering](https://github.com/ramiro-c/ai-engineering-coderhouse-course).
@@ -94,7 +94,7 @@ comparten el modelo default del provider.
 `python demo.py` es un REPL: escribís la consulta (Enter vacío corre la demo de
 LangGraph vs CrewAI) y en cada turno escribe:
 
-- `output.md` — brief (notes + análisis), pisado en cada corrida
+- `output.md` — research (notes + análisis), pisado en cada corrida
 - `traces/delegation.log` — hops + slots, legible
 - `traces/delegation.json` — lo mismo en JSON
 
