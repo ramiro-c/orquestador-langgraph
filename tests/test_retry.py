@@ -5,7 +5,7 @@ from __future__ import annotations
 from langgraph.errors import NodeError
 from langgraph.types import RetryPolicy
 
-from agents.retry import is_transient_error, node_error_handler
+from agents.retry import is_transient_error, make_error_handler, node_error_handler
 from graph import build_graph, run_query
 from state import initial_fields
 
@@ -37,6 +37,20 @@ def test_error_handler_cierra_con_last_error():
     cmd = node_error_handler(initial_fields(), err)
     assert cmd.goto == "writer"
     assert "supervisor" in cmd.update["last_error"]
+    assert cmd.update["next_agent"] == "FINISH"
+
+
+def test_make_error_handler_default_sink_es_writer():
+    err = NodeError(node="supervisor", error=RuntimeError("Provider returned error"))
+    cmd = make_error_handler()(initial_fields(), err)
+    assert cmd.goto == "writer"
+
+
+def test_make_error_handler_con_hitl_manda_a_approval():
+    err = NodeError(node="researcher", error=RuntimeError("Provider returned error"))
+    cmd = make_error_handler("approval")(initial_fields(), err)
+    assert cmd.goto == "approval"
+    assert "researcher" in cmd.update["last_error"]
     assert cmd.update["next_agent"] == "FINISH"
 
 

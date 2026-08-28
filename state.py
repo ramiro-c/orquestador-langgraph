@@ -33,6 +33,7 @@ class OrchestratorState(MessagesState):
     last_agent: str
     step_count: int
     last_error: str
+    output_path: str
 
 
 def initial_fields() -> dict:
@@ -44,4 +45,5 @@ def initial_fields() -> dict:
         "last_agent": "",
         "step_count": 0,
         "last_error": "",
+        "output_path": "",
     }
