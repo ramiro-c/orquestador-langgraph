@@ -19,3 +19,11 @@ langgraph-prebuilt==1.1.0
 langchain-tavily==0.2.18
 redis>=8
 fakeredis>=2
+
+# --- Pre-entrega 7: API HTTP + observabilidad ---
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+httpx==0.28.1
+arize-phoenix==20.4.0
+openinference-instrumentation-langchain==0.1.72
+langgraph-checkpoint-redis==0.5.2

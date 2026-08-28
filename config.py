@@ -40,3 +40,7 @@ GOOGLE_CLOUD_LOCATION = os.getenv("GOOGLE_CLOUD_LOCATION")
 RECURSION_LIMIT = 20
 
 REDIS_URL = _env_str("REDIS_URL", "redis://localhost:6379")
+
+PHOENIX_COLLECTOR_ENDPOINT = _env_str(
+    "PHOENIX_COLLECTOR_ENDPOINT", "http://localhost:6006/v1/traces"
+)
