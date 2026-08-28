@@ -38,3 +38,5 @@ GOOGLE_CLOUD_LOCATION = os.getenv("GOOGLE_CLOUD_LOCATION")
 # Supersteps del grafo padre (supervisor + especialistas). El ReAct interno
 # de cada create_agent no consume este límite.
 RECURSION_LIMIT = 20
+
+REDIS_URL = _env_str("REDIS_URL", "redis://localhost:6379")
