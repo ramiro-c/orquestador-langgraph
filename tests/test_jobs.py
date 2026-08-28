@@ -80,3 +80,39 @@ async def test_set_failed_writes_hash_even_when_job_missing(store):
     assert job is not None
     assert job["status"] == "FAILED"
     assert job["error"] == "boom"
+
+
+@pytest.mark.anyio
+async def test_claim_approval_transiciona_a_running_y_devuelve_true(store):
+    await store.create("job-claim-1", "Redis vs Kafka")
+    await store.set_status("job-claim-1", "AWAITING_APPROVAL")
+
+    claimed = await store.claim_approval("job-claim-1")
+
+    assert claimed is True
+    job = await store.get("job-claim-1")
+    assert job["status"] == "RUNNING"
+
+
+@pytest.mark.anyio
+async def test_claim_approval_devuelve_false_si_no_esta_awaiting_approval(store):
+    await store.create("job-claim-2", "Redis vs Kafka")
+
+    claimed = await store.claim_approval("job-claim-2")
+
+    assert claimed is False
+    job = await store.get("job-claim-2")
+    assert job["status"] == "PENDING"
+
+
+@pytest.mark.anyio
+async def test_claim_approval_doble_approve_solo_uno_gana(store):
+    """Simula el double-approve race: solo la primera llamada debe ganar."""
+    await store.create("job-claim-3", "Redis vs Kafka")
+    await store.set_status("job-claim-3", "AWAITING_APPROVAL")
+
+    primero = await store.claim_approval("job-claim-3")
+    segundo = await store.claim_approval("job-claim-3")
+
+    assert primero is True
+    assert segundo is False

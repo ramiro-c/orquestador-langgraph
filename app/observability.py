@@ -19,7 +19,11 @@ def init_observability() -> None:
     continúa: la API no debe morir por falta de observabilidad.
     """
     try:
-        register(project_name="orquestador-langgraph", endpoint=PHOENIX_COLLECTOR_ENDPOINT)
+        register(
+            project_name="orquestador-langgraph",
+            endpoint=PHOENIX_COLLECTOR_ENDPOINT,
+            batch=True,
+        )
         LangChainInstrumentor().instrument()
     except Exception as exc:  # noqa: BLE001 - Phoenix caído no debe tumbar la API
         logger.warning("No se pudo inicializar Phoenix (%s); continuando sin tracing.", exc)

@@ -2,7 +2,7 @@
 
 CLI:
     python demo.py          # REPL: una consulta por turno, 'salir' para terminar
-    python demo.py --trace  # mismo REPL + hops, traces/ y output.md
+    python demo.py --trace  # mismo REPL + hops, traces/ y outputs/<tema>.md
 """
 
 from __future__ import annotations
@@ -181,7 +181,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--trace",
         action="store_true",
-        help="REPL interactivo: hops en vivo, pisa traces/ y output.md",
+        help="REPL interactivo: hops en vivo, pisa traces/ y outputs/<tema>.md",
     )
     args = parser.parse_args(argv if argv is not None else sys.argv[1:])
 
