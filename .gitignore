@@ -12,3 +12,4 @@ outputs/*.md
 traces/*
 !traces/.gitkeep
 .secrets/
+.worktrees/
