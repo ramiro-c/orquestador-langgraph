@@ -16,7 +16,7 @@ Los especialistas son `langchain.agents.create_agent` (sucesor de
 ## Requisitos
 
 - Python 3.12+ y `pip`
-- Docker (para Redis Stack y Phoenix)
+- Docker (para Redis Stack, RedisInsight y Phoenix)
 - `TAVILY_API_KEY` ([app.tavily.com](https://app.tavily.com))
 - Credencial LLM según `LLM_PROVIDER` en `.env`
 
@@ -24,13 +24,14 @@ Los especialistas son `langchain.agents.create_agent` (sucesor de
 
 ### 1. Infraestructura
 
-Redis Stack (RedisJSON para el checkpointer) y Phoenix:
+Redis Stack (RedisJSON para el checkpointer), RedisInsight y Phoenix:
 
 ```bash
 docker compose up -d
 ```
 
 - Redis: `localhost:6379`
+- RedisInsight: [http://localhost:5540](http://localhost:5540) — al conectar, host `redis` y puerto `6379` (el nombre del servicio, no `localhost`)
 - Phoenix UI: [http://localhost:6006](http://localhost:6006)
 
 ### 2. Python y variables
@@ -50,7 +51,7 @@ Nunca commitees el `.env`.
 uvicorn app.main:app --reload
 ```
 
-La app **no** va en Docker: solo Redis y Phoenix.
+La app **no** va en Docker: solo Redis, RedisInsight y Phoenix.
 
 ### 4. Probar con curl
 

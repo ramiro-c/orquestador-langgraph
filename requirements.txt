@@ -17,7 +17,7 @@ pytest>=8
 langgraph==1.2.11
 langgraph-prebuilt==1.1.0
 langchain-tavily==0.2.18
-redis>=8
+redis>=5.2.1,<8
 fakeredis>=2
 
 # --- Pre-entrega 7: API HTTP + observabilidad ---
