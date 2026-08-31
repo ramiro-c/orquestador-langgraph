@@ -2,7 +2,9 @@
 
 ``route_from_supervisor`` devuelve un ``Literal`` con nombres de nodo: eso es
 lo que pide la consigna para las aristas condicionales. ``FINISH`` se mapea a
-``writer``, que pisa ``output.md`` y termina en ``END``.
+``writer``, que escribe ``outputs/{tema}.md`` y termina en ``END``. Con
+``enable_hitl=True`` (y un ``checkpointer``) se intercala ``approval`` entre
+``FINISH`` y ``writer`` para pausar antes de escribir a disco.
 """
 
 from __future__ import annotations
@@ -18,9 +20,10 @@ from langgraph.types import RetryPolicy
 
 from agents.analyst_agent import make_analyst_node
 from agents.research_agent import make_researcher_node
-from agents.retry import NODE_RETRY, node_error_handler
+from agents.retry import NODE_RETRY, make_error_handler
 from agents.supervisor import make_supervisor_node
 from agents.writer import make_writer_node
+from app.hitl import approval_node
 from config import RECURSION_LIMIT
 from state import OrchestratorState, initial_fields
 
@@ -44,7 +47,12 @@ def build_graph(
     analyst: NodeFn | None = None,
     writer: NodeFn | None = None,
     retry_policy: RetryPolicy | None = NODE_RETRY,
+    checkpointer=None,
+    enable_hitl: bool = False,
 ) -> CompiledStateGraph:
+    if enable_hitl and checkpointer is None:
+        raise ValueError("enable_hitl=True requiere un checkpointer (p. ej. InMemorySaver).")
+
     if supervisor is None or researcher is None or analyst is None:
         if llm is None:
             from clients.factory import build_role_models
@@ -57,11 +65,13 @@ def build_graph(
         analyst = analyst or make_analyst_node(models["analyst"])
     writer = writer or make_writer_node()
 
+    finish_target = "approval" if enable_hitl else "writer"
+
     builder = StateGraph(OrchestratorState)
     if retry_policy is not None:
         builder.set_node_defaults(
             retry_policy=retry_policy,
-            error_handler=node_error_handler,
+            error_handler=make_error_handler(finish_target),
         )
     builder.add_node("supervisor", supervisor)
     builder.add_node("researcher", researcher)
@@ -74,13 +84,16 @@ def build_graph(
         {
             "researcher": "researcher",
             "analyst": "analyst",
-            "writer": "writer",
+            "writer": finish_target,
         },
     )
     builder.add_edge("researcher", "supervisor")
     builder.add_edge("analyst", "supervisor")
+    if enable_hitl:
+        builder.add_node("approval", approval_node)
+        builder.add_edge("approval", "writer")
     builder.add_edge("writer", END)
-    return builder.compile()
+    return builder.compile(checkpointer=checkpointer)
 
 
 def invoke_config() -> dict:

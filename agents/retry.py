@@ -59,19 +59,30 @@ NODE_RETRY = RetryPolicy(
 )
 
 
-def node_error_handler(state: dict, error: NodeError) -> Command:
-    """Después de agotar retries: anotá el fallo y mandá a ``writer``."""
-    detail = error.error
-    msg = (
-        f"El nodo `{error.node}` falló después de reintentos "
-        f"({type(detail).__name__}: {detail}). Paso al writer."
-    )
-    return Command(
-        update={
-            "last_error": msg,
-            "messages": [AIMessage(content=msg, name=error.node)],
-            "next_agent": "FINISH",
-            "last_agent": error.node,
-        },
-        goto="writer",
-    )
+def make_error_handler(sink: str = "writer"):
+    """Handler de nodo: agotados los retries, anotá el fallo y mandá a ``sink``.
+
+    Sin HITL el sink es ``writer`` (comportamiento previo). Con HITL debe ser
+    ``approval`` para no escribir a disco sin que un humano lo apruebe.
+    """
+
+    def error_handler(state: dict, error: NodeError) -> Command:
+        detail = error.error
+        msg = (
+            f"El nodo `{error.node}` falló después de reintentos "
+            f"({type(detail).__name__}: {detail}). Paso al {sink}."
+        )
+        return Command(
+            update={
+                "last_error": msg,
+                "messages": [AIMessage(content=msg, name=error.node)],
+                "next_agent": "FINISH",
+                "last_agent": error.node,
+            },
+            goto=sink,
+        )
+
+    return error_handler
+
+
+node_error_handler = make_error_handler("writer")

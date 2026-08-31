@@ -2,7 +2,7 @@
 
 CLI:
     python demo.py          # REPL: una consulta por turno, 'salir' para terminar
-    python demo.py --trace  # mismo REPL + hops, traces/ y output.md
+    python demo.py --trace  # mismo REPL + hops, traces/ y outputs/<tema>.md
 """
 
 from __future__ import annotations
@@ -89,9 +89,7 @@ def _imprimir_resultado(hops: list[str], result: dict) -> None:
     print("\n--- Último mensaje ---")
     print(_content_str(getattr(last, "content", last)))
     if result.get("last_agent") == "writer":
-        from agents.writer import OUTPUT_PATH
-
-        print(f"\nResearch escrito en {OUTPUT_PATH}")
+        print(f"\nResearch escrito en {result.get('output_path')}")
 
 
 def _guardar_trazas(query: str, hops: list[str], result: dict) -> None:
@@ -183,7 +181,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--trace",
         action="store_true",
-        help="REPL interactivo: hops en vivo, pisa traces/ y output.md",
+        help="REPL interactivo: hops en vivo, pisa traces/ y outputs/<tema>.md",
     )
     args = parser.parse_args(argv if argv is not None else sys.argv[1:])
 
